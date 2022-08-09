@@ -598,6 +598,8 @@ public class Principal extends javax.swing.JFrame {
         loadTableDep();
         modoDep = "Navegar";
         manipulaInterfaceDep();
+        c_dep_codigo.setText("");
+        c_dep_nome.setText("");
     }//GEN-LAST:event_bt_dep_excluirActionPerformed
 
     private void bt_func_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_func_novoActionPerformed
@@ -608,20 +610,40 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_bt_func_novoActionPerformed
 
     private void bt_func_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_func_editarActionPerformed
+
         modoFunc = "Editar";
         manipulaInterfaceFunc();
     }//GEN-LAST:event_bt_func_editarActionPerformed
 
     private void bt_func_excluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_func_excluirActionPerformed
+        int index = tb_func.getSelectedRow();
+        if (index >= 0 && index < listaFunc.size()) {
+            listaFunc.remove(index);
+        }
+        loadTableFunc();
         modoFunc = "Navegar";
         manipulaInterfaceFunc();
+        c_func_mat.setText("");
+        c_func_nome.setText("");
+        cb_func_dep.setSelectedIndex(0);
     }//GEN-LAST:event_bt_func_excluirActionPerformed
 
     private void tb_funcMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tb_funcMouseClicked
-        // TODO add your handling code here:
+
+        int index = tb_func.getSelectedRow();
+        if (index >= 0 && index < listaFunc.size()) {
+            Funcionario f = listaFunc.get(index);
+            c_func_mat.setText(String.valueOf(f.getMatricula()));
+            c_func_nome.setText(f.getNome());
+            modoFunc = "Selecao";
+            manipulaInterfaceFunc();
+        }
+
     }//GEN-LAST:event_tb_funcMouseClicked
 
     private void bt_func_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_func_cancelarActionPerformed
+        c_func_mat.setText("");
+        c_func_nome.setText("");
         modoFunc = "Navegar";
         manipulaInterfaceFunc();
     }//GEN-LAST:event_bt_func_cancelarActionPerformed
@@ -630,19 +652,22 @@ public class Principal extends javax.swing.JFrame {
         int index = cb_func_dep.getSelectedIndex();
         if (index == 0) {
             JOptionPane.showMessageDialog(this, "Selecione um departamento");
-        } else {
-            Funcionario f = new Funcionario();
-            f.setMatricula(Integer.parseInt(c_func_mat.getText()));
-            f.setNome(c_func_nome.getText());
-
+        } else if (modoFunc.equals("Novo")) {
+            Funcionario f = new Funcionario(Integer.parseInt(c_func_mat.getText()), c_func_nome.getText());
             listaFunc.add(f);
             listaDep.get(index - 1).addFunc(f);
+        } else if (modoFunc.equals("Editar")) {
+            int i = tb_func.getSelectedRow();
+            listaFunc.get(i).setMatricula(Integer.parseInt(c_func_mat.getText()));
+            listaFunc.get(i).setNome(c_func_nome.getText());
+            listaFunc.get(i).getDep().setNome(listaDep.get(index - 1).getNome());
         }
         loadTableFunc();
         modoFunc = "Navegar";
         manipulaInterfaceFunc();
         c_func_mat.setText("");
         c_func_nome.setText("");
+        cb_func_dep.setSelectedIndex(0);
     }//GEN-LAST:event_bt_func_salvarActionPerformed
 
     private void cb_func_depActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_func_depActionPerformed
